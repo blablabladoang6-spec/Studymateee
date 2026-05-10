@@ -1,0 +1,75 @@
+import React, { useState } from 'react';
+import { BookOpen, CheckCircle, Clock, Moon, Sun, Plus, Trash2 } from 'lucide-react';
+
+export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+  const [tasks, setTasks] = useState([]);
+  const [newTask, setNewTask] = useState('');
+
+  const addTask = () => {
+    if (newTask.trim()) {
+      setTasks([...tasks, { id: Date.now(), text: newTask }]);
+      setNewTask('');
+    }
+  };
+
+  if (!isLoggedIn) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+        <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+          <h1 className="text-3xl font-bold text-blue-600 mb-6 text-center">StudyMate</h1>
+          <button 
+            onClick={() => setIsLoggedIn(true)}
+            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
+          >
+            Masuk ke Dashboard
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className={`min-h-screen p-6 ${darkMode ? 'bg-gray-900 text-white' : 'bg-gray-50 text-gray-900'}`}>
+      <div className="max-w-2xl mx-auto">
+        <header className="flex justify-between items-center mb-8">
+          <div className="flex items-center gap-2">
+            <BookOpen className="text-blue-500" />
+            <h1 className="text-2xl font-bold">StudyMate</h1>
+          </div>
+          <button onClick={() => setDarkMode(!darkMode)} className="p-2 rounded-full bg-gray-200 dark:bg-gray-700">
+            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+        </header>
+
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md mb-6">
+          <h2 className="text-xl font-semibold mb-4 flex items-center gap-2 text-black dark:text-white">
+            <Clock size={20} /> Tambah Tugas Baru
+          </h2>
+          <div className="flex gap-2">
+            <input 
+              type="text"
+              value={newTask}
+              onChange={(e) => setNewTask(e.target.value)}
+              placeholder="Apa yang mau dikerjakan?"
+              className="flex-1 p-2 border rounded-lg text-black"
+            />
+            <button onClick={addTask} className="bg-blue-600 text-white p-2 rounded-lg"><Plus /></button>
+          </div>
+        </div>
+
+        <div className="space-y-3">
+          {tasks.map(task => (
+            <div key={task.id} className="flex justify-between items-center p-4 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700">
+              <span className="text-black dark:text-white">{task.text}</span>
+              <button onClick={() => setTasks(tasks.filter(t => t.id !== task.id))} className="text-red-500">
+                <Trash2 size={18} />
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
